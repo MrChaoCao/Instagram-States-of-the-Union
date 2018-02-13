@@ -5,10 +5,11 @@ Instagram states of the union (ISOTU) is a data visualization tool to show the u
 Users will be presented with an unscaled image of the united states. Users will be able to input a hash tag and be presented with a map where each state's landmass has been rescaled by the popularity of posts with that tag in each state.
 
 ```
-const stateSize = countryArea / stateArea
+const percentSize =  stateArea / countryArea
 const percentTags = tagPostsInState / totalTagPosts
+const scalingFactor = (percentTags - percentSize)
 
-const finalSize = stateSize * percentTags
+const scaledSize = percentSize + scalingFactor*100
 ```
 
 ![](./isotu_wireframe)
