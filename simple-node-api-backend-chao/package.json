@@ -15,8 +15,12 @@
     "start:debug": "DEBUG=* node app.js"
   },
   "dependencies": {
-    "express": "^4.15.3",
+    "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "net": "^1.0.2",
     "node-fetch": "^1.7.3",
+    "tls": "0.0.1",
+    "twitter": "^1.7.1",
     "webpack": "^3.4.1"
   },
   "devDependencies": {

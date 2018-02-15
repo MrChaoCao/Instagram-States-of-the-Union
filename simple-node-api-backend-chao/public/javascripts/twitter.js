@@ -7,9 +7,11 @@ var twitter = new _twitter({
   "access_token_secret": 'KWk1xAVNW4b02PdxJvAXOgwuVzmUTGdlkUZM4QRXkobrO',
 });
 
-
-twitter.get('search/tweets.json', {q: 'node.js'}, function(error, tweets, response) {
-  if (!error) {
-    console.log(tweets);
-  }
-});
+export const apiCall = () => {
+  console.log('test')
+  twitter.get('search/tweets.json', {q: 'node.js'}, function(error, tweets, response) {
+    if (!error) {
+      console.log(tweets);
+    }
+  });
+}
