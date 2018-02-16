@@ -43,13 +43,13 @@ Instagram States of the Union will be implemented with:
 
 #### Day 3
 - [x] Learn twitter's standard api cannot be used the way I want
-- [x] Mental breakdown, accept fact that project won't have anything to show.
+- [x] Realize project is massively over scoped, emotional breakdown, accept fact that project won't have anything to show by deadline.
 
 #### Day 4
 - [x] Find out about twitter's streaming API
 - [x] Return a constant stream of tweets
 - [x] Learn that websockets are required to use the twitter stream because otherwise the tweets will never leave the server.
-- [x] Learn valuable lessons about websockets
+- [x] Research websockets and experiment with their implementation.
 - [ ] be able to show tweets on the front end
 
 
