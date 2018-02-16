@@ -1,36 +1,24 @@
-# Instagram: States of the Union
+# States of the Union
 ## Background and overview
-Instagram states of the union (ISOTU) is a data visualization tool to show the user which state in the country are users uploading posts being made for any given hashtag.
+States of the union is a data visualization tool to show which states tweet the most relative to their geographic area.
 
-Users will be presented with an unscaled image of the united states. Users will be able to input a hash tag and be presented with a map where each state's landmass has been rescaled by the popularity of posts with that tag in each state.
+When the app is started up a constant stream of tweets will be fetched from the Twitter API and displayed to the user. Tweets will be sorted by geolocation to determine from what state it originates. Upon loading all states will start at size zero. As tweets start coming in, the size of states will be rescaled to display each state's relative share of American tweets.
 
-```
-const percentSize =  stateArea / countryArea
-const percentTags = tagPostsInState / totalTagPosts
-const scalingFactor = (percentTags - percentSize)
-
-const scaledSize = percentSize + scalingFactor*100
-```
-
-![](./isotu_wireframe)
-For example a search for tags involving spring break might produce a map like this
+For example, if Delaware has the first tweet, then Delaware will be the size of the United states. If Pennsylvania has the 2nd tweet, both states will take up half the country, etc.
 
 
 ## Functionality & MVP
-Users will see a scalable map of the 50 states of the country, and a search bar used to input desired hashtags.
+Users will see a scalable map of the 50 states of the country. All states will start with 0 size and will inflate as users begin tweeting.
 
-Upon inputting a tag the instagram database will be queried to find the total number of posts bearing that tag. Since each post includes a geotag, posts can be assigned to a state based on the coordinates where the post was uploaded.
 
-After the relative popularity of the inputted tag is determined, each state's total area will be scaled by its popularity for the selected tag and the rescaled image of the United States will be presented to the user.
 
-### Bonus
-Instead of showing just the resized state, ISOTU will display the most liked image for the given tag cropped to fit state borders.
 
 ## Architecture and Technologies
 Instagram States of the Union will be implemented with:
 * Vanilla JS for overall project structure and to create the user navigation experience
 * D3 data visualization to render the scaled map
-* Instagram's public API to find hash tag counts and geolocations
+* Twitters public API to produce tweets in real time
+* socket.io to allow the server to continually broadcast tweets to the front end
 * Google's Geocoding API to convert geolocations into state names
 * Webpack to bundle and serve scripts
 
@@ -38,27 +26,37 @@ Instagram States of the Union will be implemented with:
 ## Implementation Timeline
 
 #### Over the weekend
-- [ ] Investigate options
-- [ ] Work on a different project proposal
+- [x] Investigate options
+- [x] Work on a different project proposal
 
 #### Day 1
-- [ ] Conceptualize new project and write Readme
-- [ ] Feasibility meeting
-- [ ] Learn D3, render State map
-- [ ] Acquire API keys for google, instagram,
+- [x] Conceptualize new project and write Readme
+- [x] Feasibility meeting
+- [x] Learn about D3
+- [x] Acquire API keys for google, twitter
 
 #### Day 2
-- [ ] Fine tune rendering of state map
-- [ ] Familiarize myself with the data returned from the API calls
+- [x] Render the D3 non-contiguous cartogram
+- [x] Read twitter API documentation
+- [x] Get a tweet
+- [x] Realize project is far more complicated than first assumed
 
 #### Day 3
-- [ ] Be able to apply scaling to states
-- [ ] Create user input field
+- [x] Learn twitter's standard api cannot be used the way I want
+- [x] Mental breakdown, accept fact that project won't have anything to show.
 
 #### Day 4
-- [ ] Debugging
-- [ ] Styling and improvements to user experience
+- [x] Find out about twitter's streaming API
+- [x] Return a constant stream of tweets
+- [x] Learn that websockets are required to use the twitter stream because otherwise the tweets will never leave the server.
+- [x] Learn valuable lessons about websockets
+- [ ] be able to show tweets on the front end
+
 
 #### Bonus features
-- [ ] Fill state portraits with sample photos from data set
-- [ ] Implement animations to provide a more enjoyable user experience
+- [ ] Be able to functionally use websockets
+- [ ] Use google geocoding API to successfully map tweet geolocations to State names
+- [ ] Live update D3 visualization state scaling with tweeting states
+- [ ] Display Tweets on page
+- [ ] Style project
+- [ ] Finish project

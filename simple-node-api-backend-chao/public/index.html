@@ -23,6 +23,21 @@
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
     <script type="text/javascript" src="./bundle.js"></script>
+
+    <script>
+        var socket = io.connect('https://localhost:3000');
+        jQuery(function($) {
+          var tweetContent = $('ul.tweets');
+          socket.on('twitter-stream', function(data){
+            tweetContent.prepend('<li>' + '<div id="prof-info">' +
+            `<img id="prof-pic" src="${data.profile_pic}"/>` + '<div id="prof-names">' +
+            '<div id="name">' + data.name + '</div>'+
+            '<div id="username">' + '@' + data.username + '</div>' + '</div>' + '</div>' +
+            data.text + '</li>');
+        });
+      });
+    </script>
+
   </head>
   <body>
     Cors Test

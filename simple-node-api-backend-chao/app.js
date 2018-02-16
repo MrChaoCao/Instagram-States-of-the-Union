@@ -1,10 +1,15 @@
 const _twitter = require('twitter');
 const express = require('express')
 const app = express()
+
+const server = app.listen(3000, function(){
+  console.log('listening to requests on port 3000')
+});
+const io = require('socket.io')(server);
 // const http = require('http').Server(app)
 const path = require('path')
 const fetch = require('node-fetch')
-const PORT = 3000
+// const PORT = 3000
 
 app.use(express.static('public'))
 
@@ -55,19 +60,50 @@ app.get('/tweets', (req, res) => {
   // });
 
   //Experimental
-  twitter.stream('statuses/filter', {'locations':'-180,-90,180,90'}, function(stream){
-    stream.on('data', function(data) {
-      if (data.coordinates !== null && data.coordinates !== undefined)  {
-        console.log(data.coordinates.coordinates);
-          var tweet = {
-            "lat": data.coordinates.coordinates[0],
-            "lng": data.coordinates.coordinates[1]
-          };
-          res.json(tweet);
-          // res.json(txweet);
-        }
-    });
+  // twitter.stream('statuses/filter', {'locations':'-180,-90,180,90'}, function(stream){
+  //   stream.on('data', function(data) {
+  //     if (data.coordinates !== null && data.coordinates !== undefined)  {
+  //       console.log(data.coordinates.coordinates);
+  //         var tweet = {
+  //           "lat": data.coordinates.coordinates[0],
+  //           "lng": data.coordinates.coordinates[1]
+  //         };
+  //         res.json(tweet);
+  //         // res.json(txweet);
+  //       }
+  //   });
+  // });
+
+  var currentStream = null;
+
+  io.on('connection', function(socket) {
+  console.log('Connected!');
+  socket.on('disconnect', () => console.log('Disconnected'));
+  socket.on('start tweets', function() {
+    if (currentStream === null) {
+
+        twitter.stream('statuses/filter', {'locations':'-180,-90,180,90'}, function(stream){
+          currentStream = stream;
+          currentStream.on('data', function(data) {
+              if (data.coordinates !== null && data.coordinates !== undefined) {
+                var tweet = {
+                  "name": data.user.name,
+                  "username": data.user.screen_name,
+                  "profile_pic": data.user.profile_image_url_https,
+                  "text": data.text,
+                  "hashtags": data.entities.hashtags,
+                  "lat": data.coordinates.coordinates[0],
+                  "lng": data.coordinates.coordinates[1]
+                };
+                socket.broadcast.emit("twitter-stream", tweet);
+                socket.emit('twitter-stream', tweet);
+            }
+          });
+        });
+    }
   });
+  socket.emit('connected');
+});
 
   //Attempt to figure out reverse geocode
   //Verdict: shape of data is really strange, the bounding box of the
@@ -83,29 +119,29 @@ app.get('/tweets', (req, res) => {
 
 
 
+//D3 visualization
+// app.get('/map', (req, res) => {
+//   let results
+//   fetch('http://bl.ocks.org/mbostock/raw/4090846/us.json')
+//     .then(function(response) {
+//         return response.text();
+//     }).then(function(body) {
+//       results = JSON.parse(body)
+//         console.log(typeof body);
+//         console.log(body.length);
+//         console.log(JSON.parse(body)[0]);
+//         res.send(results)
+//     });
+//
+// })
 
-app.get('/map', (req, res) => {
-  let results
-  fetch('http://bl.ocks.org/mbostock/raw/4090846/us.json')
-    .then(function(response) {
-        return response.text();
-    }).then(function(body) {
-      results = JSON.parse(body)
-        console.log(typeof body);
-        console.log(body.length);
-        console.log(JSON.parse(body)[0]);
-        res.send(results)
-    });
+// app.get('/map-values', (req, res) => {
+//   req.body.params
+//
+// })
 
-})
-
-app.get('/map-values', (req, res) => {
-  req.body.params
-
-})
-
-
-app.listen(PORT, () => {
-  console.log(__dirname);
-  console.log(`listening on ${PORT}`)
-})
+//
+// app.listen(PORT, () => {
+//   console.log(__dirname);
+//   console.log(`listening on ${PORT}`)
+// })
