@@ -22,14 +22,64 @@ app.get('/tweets', (req, res) => {
     "access_token_key": '963316414021906433-TFseaRObb3EMyVBEXMxvsZ69f3YAwtK',
     "access_token_secret": 'KWk1xAVNW4b02PdxJvAXOgwuVzmUTGdlkUZM4QRXkobrO',
   });
+  //
+  // Working way to get 15 tweets
+  // BUT there is no location data
+  // twitter.get('search/tweets.json', {q: 'node.js'}, function(error, tweets, response) {
+  //   if (!error) {
+  //     res.send(tweets)
+  //   }
+  // });
 
-  twitter.get('search/tweets.json', {q: 'node.js'}, function(error, tweets, response) {
-    if (!error) {
-      res.send(tweets)
-    }
+  //Working way to get a constant flow of tweets
+  //BUT code is borrowed from someone else's project
+    //Also not sure how to send result to front end
+    //Not entirely sure how it works
+    //Twitter API is weird, coordinates are nested within coordinates
+    //CurrentStream is possibly unecessary
+    //non-null constraint unecessary
+
+  // twitter.stream('statuses/filter', {'locations':'-180,-90,180,90'}, function(stream){
+  //   currentStream = stream;
+  //   currentStream.on('data', function(data) {
+  //     if (data.coordinates) {
+  //       if (data.coordinates !== null) {
+  //         var tweet = {
+  //           "lat": data.coordinates.coordinates[0],
+  //           "lng": data.coordinates.coordinates[1]
+  //         };
+  //         console.log(tweet);
+  //       }
+  //     }
+  //   });
+  // });
+
+  //Experimental
+  twitter.stream('statuses/filter', {'locations':'-180,-90,180,90'}, function(stream){
+    stream.on('data', function(data) {
+      if (data.coordinates !== null && data.coordinates !== undefined)  {
+        console.log(data.coordinates.coordinates);
+          var tweet = {
+            "lat": data.coordinates.coordinates[0],
+            "lng": data.coordinates.coordinates[1]
+          };
+          res.json(tweet);
+          // res.json(txweet);
+        }
+    });
   });
 
+  //Attempt to figure out reverse geocode
+  //Verdict: shape of data is really strange, the bounding box of the
+  //data requires you to input coordinates in quadruplicate, maybe more
+  // twitter.get('geo/reverse_geocode.json', {lat:'37.76893497', long:'-122.42284884'}, function(error, tweets, response) {
+  //   if (!error) {
+  //     console.log(tweets)
+  //   }
+  // });
+
 });
+
 
 
 
